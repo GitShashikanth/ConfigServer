@@ -1,5 +1,1 @@
-spring:
-  profiles:
-    active: dev3
-
 hi from dev3
