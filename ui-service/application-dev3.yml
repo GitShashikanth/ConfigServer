@@ -4,6 +4,7 @@ info:
     version: 16.0.3
 
 spring:
+  profiles:
   freemarker:
     template-loader-path: classpath:/build/${info.app.version}/pages/
   messages:
