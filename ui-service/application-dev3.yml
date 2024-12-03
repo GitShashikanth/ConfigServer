@@ -1,5 +1,6 @@
 spring:
   profiles: 
+    active: dev3
 
 app:
   name: MyApp (Production)
