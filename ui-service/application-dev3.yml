@@ -1,3 +1,16 @@
-Hi from ui-service dev3 env
 spring:
   profiles: dev3
+
+app:
+  name: MyApp (Production)
+  version: 1.0-prod
+  description: "This is the production configuration"
+
+server:
+  port: 8082
+
+logging:
+  level:
+    root: WARN
+
+  
