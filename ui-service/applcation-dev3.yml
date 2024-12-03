@@ -1,1 +1,350 @@
-hi from dev3
+info:
+  app:
+    #    update the version here. this will update template path and cdn url versions
+    version: 16.0.3
+
+spring:
+  profiles:
+    active: dev3
+  freemarker:
+    template-loader-path: classpath:/build/${info.app.version}/pages/
+  messages:
+    basename: ${spring.freemarker.template-loader-path}../language/language
+
+  redis:
+    buckets:
+      cache_toolProxyProfileMerge:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_cache_toolProxyProfileMerge_{0}
+      users:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_UserMapper_{0}_{1}_{2}
+      courses:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_CourseMapper_{0}_{1}_{2}
+      associations:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_AssociationMapper_{0}_{1}_{2}
+      roles:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_RoleMapper_{0}_{1}_{2}
+      lmsclientid:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_LmsClientIdMapper_{0}_{1}_{2}
+      lmsassociations:
+        enabled: true
+        ttlSeconds: 86400
+        keyFormat: DEV3_LmsAssociationMapper_{0}_{1}_{2}
+endpoints:
+  refresh:
+    enabled: true
+  health:
+    enabled: true
+
+socket:
+  services:
+    launchcontexturl: /v1/launchcontext/
+    courseserviceurl: /v1/courses
+
+experience:
+  exchange:
+    productapiurl: https://exchange-stg.pearson.com/api/products/
+    contentSearchUrl: https://exchange.stg-prsn.com/search
+  #    productapiurl: https://exchange-stg.pearson.com/api/products/
+  defaults:
+    defaultProductPlatform: Revel
+
+#Mockrevel view and fallback URL for Development
+mockrevel:
+  viewBaseUrl: https://socket-dev3.pearsoned.com
+  fallbackBaseUrl: https://socket-dev3.pearsoned.com
+
+#Reference documentation https://confluence.pearson.com/confluence/display/IAM/Authentication-Filter+Library+Documentation
+#for pi-auth, pi-token and pi-encryption parameters.
+com:
+  pearson:
+    ed:
+      pi:
+        auth:
+          system:
+            username: edsng_3pl_system
+            password: MNOjkp2Mlp49q79Bt1pHroDBNqZv76r3
+          token:
+            url: https://int-piapi-internal.stg-openclass.com/tokens/
+          validator:
+            data-secure-encryptor:
+              host: http://datasecure2.ecollegeqa.net:3000/
+              sock-timeout: 5000
+              conn-timeout: 2000
+            authenticator-key: appGridToolsAES256
+            authenticator-value: idm=EAAQF5jdYK-jUyVHHrYCtBCqJCkjeeDJFfxP7VI3s1xkwmE
+            jwks-proxy-conn-time-out: 10000
+            jwks-proxy-read-time-out: 10000
+        jwt:
+          client-id: O1hlkmRCpxs7ZnIlbp2WlAvrAFFAWvOx
+          validate-federation-url: https://login-stg.pearson.com/v1/piapi-int/login/validateFederationJWT
+          idamBaseUrl: https://login-stg.pearson.com/v1/piapi-int/login
+          graceTimeSeconds: 15
+          minTokenLifetime: 300
+          timeoutSeconds: 5
+          jwks:
+            claim_issuer: 3PLNG
+            idp-id: 55ca08ace4b0e780642ecb82
+            # Pi stg points to dev to get key for both Socket dev and stg environments.
+            keyset_file: /app/socket/resources/jwt-keypairset-dev.json
+            # Pass empty string
+            link-accounts-fail-url:
+            link-accounts-success-url:
+              exchange: https://exchange-stg.pearson.com
+              revel: https://revel-ilp-stg.pearson.com/#/courses/{courseId}/view
+            user-token-success-url: https://socket-dev3.pearsoned.com/info
+
+    eds:
+      profileservice:
+        configuration:
+          socketDB: mongodb://socketuser:s3rv1c3s@pl-0-us-east-1.il7bk.mongodb.net:1024,pl-0-us-east-1.il7bk.mongodb.net:1025,pl-0-us-east-1.il7bk.mongodb.net:1026/devsocket3?ssl=true&replicaSet=atlas-ifbqyy-shard-0&authSource=admin&retryWrites=true&w=majority
+          keyStoreCollection: keystore
+      socket:
+        grades:
+          gradeSyncSummaryCount: 5
+          gradeSyncSuccessPercentage: 90
+          #filter results using gradeSyncMode in coordinator summary - options (AUTOMATIC, ON_REQUEST, ALL)
+          gradeSyncMode: ON_REQUEST
+        configuration:
+          block1p1:
+            gracePeriod: 200
+            messageHeading: "After {{blockDate}}, you must use the Access Pearson (LTI 1.3) tool to add or copy Pearson content to new Canvas, D2L Brightspace, or other LMS courses."
+            messageBody: "<br>The LTI 1.3 tool is usually called Access Pearson in your LMS. Check with your LMS administrator if you don't see the LTI 1.3 tool. <br><br>The Revel and eText (LTI 1.1) tool is no longer available for <b>new LMS courses</b> after {{blockDate}}. You and your students can continue to access Pearson content from <b>existing LMS courses</b> already set up using LTI 1.1, including this course. <br><br>For details, see <a target=\"_blank\" tabindex=\"-1\" href=\"https://help.pearsoncmg.com/integration/ng/instructor/en-us/content/setup_access_pearson.htm \">Instructor Help</a>."
+          organizationExtentionBaseUrl: https://organization-ext.sllax-stg.pearsondev.tech
+          organizationBaseUrl: https://organization.stg-prsn.com
+          userAssociationBaseUrl: https://user-association.stg-openclass.com
+          productizationBaseUrl: https://productization-stg.pearsoned.com
+          orchestratorBaseUrl: https://iaccess.stg-openclass.com
+          #course copy timeout in hours
+          courseCopyInProgressTime: 24
+          #course Copy InProgress Check Interval Time in second
+          courseCopyInProgressCheckIntervalTime : 15
+          autoSyncDelayMinutes: 5
+          #Delay in milliseconds for checking availability of product model.
+          courseStatusCheckingDelay: 1000
+          courseCompositeBaseUrl: https://course-composite-stg.pearsoned.com
+          userContextBaseURL: https://ucs.stg-prsn.com
+          catalogURL: https://cert.catalog.pearsoncmg.com/catalog/ws/catalog-ws-v8
+          catalogXSD: http://dtds.pearsoncmg.com/catalog/service/v8/catalog_service_v8.xsd
+          channelPartnerGatewayURL: https://gateway-cpg-stg.pearson.com
+          isCourseStatusRouteEnable: true
+          futureStateGradeSync: true
+          futureStateGradeSyncManual: true
+          futureStateAssignmentSync: true
+          futureStateGradeSummarySync: true
+          uiDashboardBaseUrl: https://socket-dev3.pearsoned.com/uiservice/build
+          uiBaseUrl: https://socket-dev3.pearsoned.com/uiservice/
+          uiDashboard:
+            isNew: true
+            useXGenEnablingService: true
+            xGenBaseUrl: https://x-genenablingservice.esvcs-qa.pearsondev.tech/v1/
+          ssosAccountClientId: I6GLRFVScn7mJLB1lkpFhuLGxxX6eL4O
+
+    socket:
+      errorCodesForUnpair: SOCKET_RP_08,SOCKET_IM_06
+      configuration:
+        publicKeyFilePath: /app/socket/config/dev3/jwt-public-key.json
+        enrichRosterUserBySocket: false
+        cpgBaseUrl: https://gateway-cpg-stg.pearson.com
+        socketTimeout: 10000
+        connectTimeout: 6000
+        csgBaseUrl: https://content-service.stg-prsn.com
+        excludeQuery: AND NOT productPlatform:(COLLECTION OR PRINT)
+        gradeSettingBaseUrl: https://dev3-socket-gradeserttingservice.interop-svc.dev-prsn.com
+        settingBaseUrl: https://dev3-socket-outcomesservice.interop-svc.dev-prsn.com
+        syncBaseUrl: https://dev3-socket-outcomesservice.interop-svc.dev-prsn.com
+        taskPollingDelay: 1000
+        taskPollingInterval: 1000
+        taskPollingDuration: 180000
+        ttlToNotification: 3
+        taskDetailedResultsUrl: /course/pair/status/association/{associationId}/course/{courseId}/{lookupSource}
+        registrarCourseCreateRoute: https://registrar.stg-openclass.com/sections
+        courseGetRoute: https://registrar.stg-openclass.com/courses
+        courseStatusCheckRoute: http://socket.stg-openclass.com:8080/coursestatus/{0}/association/{1}
+        isCommandFailureRequired: false
+        isCourseCreationBackwardCompatible: true
+        isOrganizationMandatoryForCourseCreation: false
+        registrarCourseEnrollmentRoute: https://registrar.stg-openclass.com/registrations
+        cdnUrl: https://socket-dev3.pearsoned.com/ui/3pl/assets/${info.app.version}/
+        launchContextCollectionName: launchcontext
+        allowedMapperType: courses,users,assignments,courseassignments,roles,lisoutcomes,lisresultsources,gradesyncstatus,lmsassociations,lmsclientid,smsUserMap,securityPrincipal
+        expireDuration: 30
+        cgLaunchBaseUrl: https://mylabmastering-qa.pearson.com/
+        sms:
+          smsBaseUrl: https://ris.cert.pearsoncmg.com
+          smsSectionroute: /sms-rest-api/courses/details/
+        tpi:
+          tpiBaseUrl: https://tpicert.pearsoncmg.com 
+          tpiDeleteRoute: /api/v3/courses/
+          tpiConsumerKey: apiconsumer
+          tpConsumerSecret: '{cipher}9488f2d2cec6fbbf284b7716421fc26d16a3f1c31c9aede09457c02ce6d5769d32daa2a886d2d7d4b2ae348fb2cd1456'
+        xGen:
+          xGenBaseUrl: https://x-genenablingservice.esvcs-stg.pearsondev.tech/
+          xGenCourseGetRoute: /v1/sections/{0}
+          xGenEnrollmentGetRoute: /v1/userassociations/{0}/sections/{1}
+          xGenSubscriptionGetRoute: /v1/orchestrator/api
+        security:
+          oauth2p0:
+            accesstokenTtlSeconds: 10000
+        cleverBaseUrl: https://api.clever.com/v3.0/users/
+        classLinkBaseUrl: https://oneroster-proxy.classlink.io
+        classLinkProxyUrl: /proxy/v1p0/{0}/ims/oneroster/v1p1/classes
+        classLinkDirectUrl: /ims/oneroster/rostering/v1p2/users
+        encryption:
+          key: U9eYp4aWr/p7h2mG+ddnqkbcjKupCHpSFmwotGAS8Qg=
+
+      instrumentation:
+        google-analytics:
+          enable: true
+          trackingId: G-81Y56S2HCZ
+          url: https://www.google-analytics.com/collect
+          threadPoolSize: 3
+          customDimension:
+            lmsName: 1
+            productModel: 2
+            organizationId: 3
+            role: 4
+            errorCode: 5
+        newRelic:
+          licenseKey: 2f665e01f9
+          applicationId: 81954940
+        aws-sqs-handler:
+            queue-arn: "aws-sqs-topic-arn"
+            queue-name: "Monitoring_Raw_Events_Queue_DEV3"
+            aws-region: "us-east-1"
+            payload-buffer-size-events: 0
+            payload-buffer-size-chars: 65536
+            enabled: false
+        request-submit-handler-mappings:
+            - handlerType: "AWS_SQS"
+              category: "Telemetry"
+              scenario: "CourseProvisioning"
+              enabled: true
+
+hystrix:
+  execution:
+    xGenRosterGetInterval: 20000
+    registrarCourseCreateInterval: 20000
+    launchContextoperationInterval: 20000
+    mapperOperationInterval: 20000
+    registrarOperationInterval: 20000
+    userCompositeSearchInterval : 5000
+    registrarCourseGetInterval: 5
+    passportOperationInterval: 5
+
+jwk:
+  keypair-set:
+    path: /app/socket/resources/jwt-keypairset-stg.json
+
+services:
+  pi:
+    url: https://int-piapi-internal.stg-openclass.com
+  courseCopy:
+    url: https://coursecopy-api.stg-prsn.com
+  registrar:
+    url:
+      user-association: https://user-association.stg-openclass.com
+  spectrum:
+    url: https://spectrum-stg.pearsoned.com
+    xCallerId: 56cf4658-90d9-11e8-9eb6-529269fb1459
+  notifications:
+    url: https://api-stage.pearson.com/notifications
+    apikey: '{cipher}adeb3df8ac3b6ae9776c82b2b66a18296703cf2ffaaf0220b5415124b137c81dcdd5925111be7e45dab792f4bc0a812c6756c63141d6db30d915aa9f7c467578'
+
+support:
+  url:
+    student: http://helpdev.pearsoncmg.com/integration/canvas/student/en/content/get_started_stu.htm
+    instructor: http://helpdev.pearsoncmg.com/integration/canvas/instructor/en/content/get_started_instr.htm
+    pearson: https://support.pearson.com/getsupport/s/
+
+externalSystem:
+  UserRoles: instructor,teacher
+
+gradeSync:
+  successPercentage: 90
+
+pearsonConsoleSigninUrl: https://console-stg.pearson.com/signin/
+
+switchTypes:
+  copyAnotherInstructorsCourse: true
+  continueWhereLeftOff: true
+  socketCourseCopyValidation: true
+  automatedCourseCopyPhase2: true
+  cdn:
+    isFromCDN: false
+    bundled: false
+createUserContext: true
+# on/off switch to create UCS for the Student dashboard(required for SOC) when IES fails to create UCS
+stuCreateUserContext: true
+
+oauth:
+  baseUrl: ${mockrevel.viewBaseUrl}${experience.baseUrl}
+  consumerName: John
+  consumerKey: 10022d8f-b47b-4de9-921c-b98f703da9fd
+  consumerSecret: '{cipher}82455c17eb0a0023b4f50db9d13ec5aedfc6064227a50ddcfec4c19630cada53'
+  provider:
+    enabled: true
+  consumer:
+    enabled: true
+  zeroLeggedConfig:
+    launchService:
+      consumerKey: 10022d8f-b47b-4de9-921c-b98f703da9fd
+      consumerSecret: '{cipher}82455c17eb0a0023b4f50db9d13ec5aedfc6064227a50ddcfec4c19630cada53'
+      paths:
+        - /opener
+
+deepLinkUiSettings:
+  deepLinkUiSettingCategory:
+    - category: assignments
+      defaultTitle: Assignments
+      isEnabled: true
+      isSearchRequired: true
+      index: 0
+    - category: courseTools
+      defaultTitle: 'Course tools'
+      isEnabled: true
+      isSearchRequired: true
+      index: 1
+    - category: eText
+      defaultTitle: eText
+      isEnabled: true
+      isSearchRequired: true
+      index: 2
+
+session:
+  maxage: ${MAX_AGE:1800000}
+cpg:
+  launch:
+    instructor:
+      roles: ${INSTRUCTOR_ROLES:Faculty,Staff,Developer,Administrator,Instructor,Teaching Assistant,Other,TeachingAssistant,TA,Non-editing Teacher,Teacher,ContentDeveloper,Course creator,Non-editing teacher,Lecturer,urn:lti:role:ims/lis/Instructor,JFKU_Program_Chair,JFKU_Instructor,National_University_Lead_Faculty,NUVHS_SS,TUT,DSI,instructor_ground,CD,Grader,Course Builder,UBC Secondary Instructor,UBC Grader,P2,CourseBuilder,instructor_online,UBC_Instructor,UBC CourseBuilder,UBC TA,AI,NUVHS_Lead_Faculty,NUVHS_Faculty,instructional_designers,Student_Services,UBC ISS,SCS_Support,Designer,P1,NUVHS_Course_Builder,OI,National_University_Faculty,National_University_Faculty_Lead,StudentServicesDOESNOTREPLY,urn:lti:instrole:ims/lis/Mentor,Mentor,urn:lti:role:ims/lis/TeachingAssistant}
+    url: ${LAUNCH_URL:https://gateway-cpg-dev.pearson.com/launch}
+
+  keystore:
+    cache:
+      ttl: ${INSTITUTION_CACHE_TTL:3600}
+
+  organization:
+    registrar:
+      get:
+        url: ${REGISTRAR_ORGANIZATION_GET_URL:https://organization-ext.sllax-stg.pearsondev.tech/organizations/{organizationId}/inclusive-access-info}
+    cache:
+      ttl: ${ORGANIZATION_CACHE_TTL:3600}
+
+product:
+  services:
+    url: ${NG_PRODUCT_INFORMATION:https://productization-stg.pearsoned.com/v3/products/{productId}}
+
+default:
+  timestamp:
+    window: ${TIMESTAMP_WINDOW:300000}
