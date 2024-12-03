@@ -1,5 +1,6 @@
 spring:
-  profiles: dev3
+  profiles: 
+    actice: dev3
 
 app:
   name: MyApp (Production)
